@@ -2,8 +2,10 @@ package com.example.onlinestorespringboot.controller;
 
 import com.example.onlinestorespringboot.dto.ResponseDto;
 import com.example.onlinestorespringboot.dto.UserDto;
+import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.service.AdminService;
 import com.example.onlinestorespringboot.service.UserService;
+import com.example.onlinestorespringboot.util.Messages;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class UserController {
 
     UserService userService;
     AdminService adminService;
+    I18nUtil i18nUtil;
 
     @GetMapping
     public ResponseEntity<UserDto> getUser() {
@@ -60,21 +63,19 @@ public class UserController {
     @PutMapping("/bun")
     public ResponseEntity<ResponseDto> bunUser(@RequestBody @Valid UserDto userDto) {
         adminService.bun(userDto);
-        return ResponseEntity.ok(new ResponseDto("User was updated successfully"));
+        return ResponseEntity.ok(new ResponseDto(i18nUtil.getMessage(Messages.USER_SUCCESS_UPDATED)));
     }
 
     @PutMapping("/manager")
     public ResponseEntity<ResponseDto> madeManager(@RequestBody @Valid UserDto userDto) {
         adminService.madeManager(userDto);
-        return ResponseEntity.ok(new ResponseDto("User was updated successfully"));
-
+        return ResponseEntity.ok(new ResponseDto(i18nUtil.getMessage(Messages.USER_SUCCESS_UPDATED)));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDto> deleteUser(@PathVariable Long id) {
         adminService.deleteById(id);
-        return ResponseEntity.ok(new ResponseDto("User was deleted successfully"));
+        return ResponseEntity.ok(new ResponseDto(i18nUtil.getMessage(Messages.USER_SUCCESS_DELETED, String.valueOf(id))));
     }
-
-
 }
+

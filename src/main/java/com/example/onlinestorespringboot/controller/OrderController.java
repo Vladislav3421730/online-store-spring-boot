@@ -2,7 +2,9 @@ package com.example.onlinestorespringboot.controller;
 
 import com.example.onlinestorespringboot.dto.OrderDto;
 import com.example.onlinestorespringboot.dto.ResponseDto;
+import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.service.OrderService;
+import com.example.onlinestorespringboot.util.Messages;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     OrderService orderService;
+    I18nUtil i18nUtil;
 
     @GetMapping
     public ResponseEntity<Page<OrderDto>> findAllOrders(
@@ -37,7 +40,7 @@ public class OrderController {
     @PutMapping
     public ResponseEntity<ResponseDto> updateOrder(@RequestBody @Valid OrderDto orderDto) {
         orderService.update(orderDto);
-        return ResponseEntity.ok(new ResponseDto("Order was updated successfully"));
+        return ResponseEntity.ok(new ResponseDto(i18nUtil.getMessage(Messages.ORDER_SUCCESS_UPDATED)));
     }
 
     @GetMapping("/{id}")

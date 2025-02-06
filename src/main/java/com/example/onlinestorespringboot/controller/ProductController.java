@@ -4,7 +4,9 @@ import com.example.onlinestorespringboot.dto.CreateProductDto;
 import com.example.onlinestorespringboot.dto.ProductDto;
 import com.example.onlinestorespringboot.dto.ProductFilterDTO;
 import com.example.onlinestorespringboot.dto.ResponseDto;
+import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.service.ProductService;
+import com.example.onlinestorespringboot.util.Messages;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +24,12 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     ProductService productService;
+    I18nUtil i18nUtil;
 
     @PostMapping
     public ResponseEntity<ResponseDto> saveProduct(@RequestBody @Valid CreateProductDto createProductDto) {
         productService.save(createProductDto);
-        return ResponseEntity.ok(new ResponseDto("the product was saved successfully"));
+        return ResponseEntity.ok(new ResponseDto(i18nUtil.getMessage(Messages.PRODUCT_SUCCESS_SAVED)));
     }
 
     @GetMapping
@@ -50,7 +53,7 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDto> deleteProduct(@PathVariable Long id) {
         productService.delete(id);
-        return ResponseEntity.ok(new ResponseDto(String.format("Product with id %d was deleted successfully", id)));
+        return ResponseEntity.ok(new ResponseDto(i18nUtil.getMessage(Messages.PRODUCT_SUCCESS_DELETED, String.valueOf(id))));
     }
 
     @GetMapping("/filter")
@@ -86,5 +89,5 @@ public class ProductController {
         ProductDto productDto = productService.findById(id);
         return ResponseEntity.ok(productDto);
     }
-
 }
+
