@@ -1,7 +1,8 @@
 package com.example.onlinestorespringboot.config;
 
-
+import com.example.onlinestorespringboot.dto.AppErrorDto;
 import com.example.onlinestorespringboot.util.JwtTokenUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -43,17 +44,28 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
             try {
+                log.info("Try getting token");
                 username = jwtTokenUtils.getUsername(jwt);
             } catch (ExpiredJwtException e) {
-                log.debug("Token expiration time has passed");
+                log.error("Token expiration time has passed");
+                handleException(response, "Token expiration time has passed", HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             } catch (SignatureException e) {
-                log.debug("Invalid signature");
+                log.error("Invalid signature");
+                handleException(response, "Invalid signature", HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             } catch (MalformedJwtException e) {
-                log.debug("Invalid token");
+                log.error("Invalid token");
+                handleException(response, "Invalid token", HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             } catch (UnsupportedJwtException e) {
-                log.debug("Token format is not supported");
+                log.error("Token format is not supported");
+                handleException(response, "Token format is not supported", HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             } catch (IllegalArgumentException e) {
-                log.debug("Token is empty or invalid");
+                log.error("Token is empty or invalid");
+                handleException(response, "Token is empty or invalid", HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         }
 
@@ -67,5 +79,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void handleException(HttpServletResponse response, String message, int status) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.getWriter().write(new ObjectMapper()
+                .writeValueAsString(new AppErrorDto(message)));
     }
 }

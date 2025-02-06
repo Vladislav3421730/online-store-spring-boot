@@ -54,17 +54,10 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 .setMaxResults(pageRequest.getPageSize())
                 .getResultList();
 
-        CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-        Root<Product> countRoot = countQuery.from(Product.class);
-        countQuery.select(cb.count(countRoot));
-        if (!predicates.isEmpty()) {
-            countQuery.where(predicates.toArray(new Predicate[0]));
-        }
-        long totalElements = entityManager.createQuery(countQuery).getSingleResult();
+        long totalElements = getTotalAmountByFilter(productFilterDTO);
 
         return new PageImpl<>(products, pageRequest, totalElements);
     }
-
 
     @Override
     public void deleteProductWithOrderItems(Long productId) {
@@ -78,5 +71,20 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                     .executeUpdate();
             entityManager.remove(product);
         }
+    }
+
+    private int getTotalAmountByFilter(ProductFilterDTO productFilterDTO) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<Product> root = query.from(Product.class);
+
+        List<Predicate> predicates = PredicateFormationAssistant.createFromDto(productFilterDTO, cb, root);
+        if (!predicates.isEmpty()) {
+            query.where(predicates.toArray(new Predicate[0]));
+        }
+        query.select(cb.count(root));
+        return entityManager.createQuery(query)
+                .getSingleResult()
+                .intValue();
     }
 }

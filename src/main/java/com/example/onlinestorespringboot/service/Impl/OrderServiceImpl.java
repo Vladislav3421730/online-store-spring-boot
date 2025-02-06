@@ -2,10 +2,12 @@ package com.example.onlinestorespringboot.service.Impl;
 
 import com.example.onlinestorespringboot.dto.OrderDto;
 import com.example.onlinestorespringboot.exception.OrderNotFoundException;
+import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.mapper.OrderMapper;
 import com.example.onlinestorespringboot.model.Order;
 import com.example.onlinestorespringboot.repository.OrderRepository;
 import com.example.onlinestorespringboot.service.OrderService;
+import com.example.onlinestorespringboot.util.Messages;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class OrderServiceImpl implements OrderService {
 
     OrderRepository orderRepository;
     OrderMapper orderMapper;
+    I18nUtil i18nUtil;
 
     @Override
     public Page<OrderDto> findAll(PageRequest pageRequest) {
@@ -38,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto findById(Long id) {
         log.info("Fetching order by ID: {}", id);
         Order order = orderRepository.findById(id).orElseThrow(() ->
-                new OrderNotFoundException("Order with id " + id + " not found"));
+                new OrderNotFoundException(i18nUtil.getMessage(Messages.ORDER_ERROR_NOT_FOUND, String.valueOf(id))));
         log.info("Found order with ID: {}", id);
         return orderMapper.toDTO(order);
     }
@@ -67,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
             log.info("Order with ID: {} updated successfully", orderDto.getId());
         } else {
             log.info("Order with id {} not found", orderDto.getId());
-            throw new OrderNotFoundException("Order with id " + orderDto.getId() + " not found");
+            throw new OrderNotFoundException(i18nUtil.getMessage(Messages.ORDER_ERROR_NOT_FOUND, String.valueOf(orderDto.getId())));
         }
     }
 }

@@ -1,8 +1,5 @@
 package com.example.onlinestorespringboot.dto;
 
-import com.example.onlinestorespringboot.model.Cart;
-import com.example.onlinestorespringboot.model.Order;
-import com.example.onlinestorespringboot.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -10,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

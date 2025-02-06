@@ -4,10 +4,12 @@ import com.example.onlinestorespringboot.dto.CreateProductDto;
 import com.example.onlinestorespringboot.dto.ProductDto;
 import com.example.onlinestorespringboot.dto.ProductFilterDTO;
 import com.example.onlinestorespringboot.exception.ProductNotFoundException;
+import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.mapper.ProductMapper;
 import com.example.onlinestorespringboot.model.Product;
 import com.example.onlinestorespringboot.repository.ProductRepository;
 import com.example.onlinestorespringboot.service.ProductService;
+import com.example.onlinestorespringboot.util.Messages;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class ProductServiceImpl implements ProductService {
 
     ProductRepository productRepository;
     ProductMapper productMapper;
+    I18nUtil i18nUtil;
 
     @Override
     public void save(CreateProductDto createProductDTO) {
@@ -43,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto findById(Long id) {
         log.info("Fetching product with id: {}", id);
         Product product = productRepository.findById(id).orElseThrow(() ->
-                new ProductNotFoundException("Product with id " + id + " was not found"));
+                new ProductNotFoundException(i18nUtil.getMessage(Messages.PRODUCT_ERROR_NOT_FOUND, String.valueOf(id))));
         return productMapper.toDTO(product);
     }
 
@@ -78,7 +81,9 @@ public class ProductServiceImpl implements ProductService {
             log.info("Deleting product with id: {}", id);
             productRepository.deleteProductWithOrderItems(id);
             log.info("Product with id {} deleted successfully", id);
-        } else throw new ProductNotFoundException("Product with id " + id + " was not found");
+        } else
+            throw new ProductNotFoundException(i18nUtil.getMessage(Messages.PRODUCT_ERROR_NOT_FOUND, String.valueOf(id)));
 
     }
+
 }

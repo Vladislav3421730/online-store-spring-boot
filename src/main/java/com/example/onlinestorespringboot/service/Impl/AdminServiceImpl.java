@@ -4,12 +4,14 @@ package com.example.onlinestorespringboot.service.Impl;
 import com.example.onlinestorespringboot.dto.UserDto;
 import com.example.onlinestorespringboot.exception.UserNotFoundException;
 import com.example.onlinestorespringboot.exception.UserUpdatingException;
+import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.mapper.UserMapper;
 import com.example.onlinestorespringboot.model.User;
 import com.example.onlinestorespringboot.model.enums.Role;
 import com.example.onlinestorespringboot.repository.UserRepository;
 import com.example.onlinestorespringboot.service.AdminService;
 import com.example.onlinestorespringboot.service.UserService;
+import com.example.onlinestorespringboot.util.Messages;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class AdminServiceImpl implements AdminService {
     UserRepository userRepository;
     UserService userService;
     UserMapper userMapper;
+    I18nUtil i18nUtil;
 
     @Override
     @Transactional
@@ -36,7 +39,7 @@ public class AdminServiceImpl implements AdminService {
         String email = (String) authentication.getPrincipal();
         if (email.equals(userDto.getEmail())) {
             log.error("User try bun himself");
-            throw new UserUpdatingException("You can't bun/unbun yourself");
+            throw new UserUpdatingException(i18nUtil.getMessage(Messages.USER_UPDATING_ERROR_CANNOT_BAN_SELF));
         }
         User user = userMapper.toEntity(userDto);
         log.info("{} {}", user.isBun() ? "ban user" : "unban", user.getEmail());
@@ -51,7 +54,7 @@ public class AdminServiceImpl implements AdminService {
         String email = (String) authentication.getPrincipal();
         if (email.equals(userDto.getEmail())) {
             log.error("User try add/remove role manager to himself");
-            throw new UserUpdatingException("You can't add/remove role manager from yourself");
+            throw new UserUpdatingException(i18nUtil.getMessage(Messages.USER_UPDATING_ERROR_CANNOT_ADD_REMOVE_ROLE_SELF));
         }
         User user = userMapper.toEntity(userDto);
         if (!user.getRoleSet().add(Role.ROLE_MANAGER)) {
@@ -72,7 +75,7 @@ public class AdminServiceImpl implements AdminService {
         String email = (String) authentication.getPrincipal();
         if (email.equals(user.getEmail())) {
             log.error("User try delete himself");
-            throw new UserUpdatingException("You can't delete yourself");
+            throw new UserUpdatingException(i18nUtil.getMessage(Messages.USER_DELETING_ERROR_CANNOT_DELETE_SELF));
         }
         log.info("Try delete user with id {}", id);
         userRepository.deleteById(id);

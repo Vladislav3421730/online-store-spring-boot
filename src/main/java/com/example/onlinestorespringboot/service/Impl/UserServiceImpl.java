@@ -3,6 +3,7 @@ package com.example.onlinestorespringboot.service.Impl;
 
 import com.example.onlinestorespringboot.dto.*;
 import com.example.onlinestorespringboot.exception.UserNotFoundException;
+import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.mapper.OderItemCartMapper;
 import com.example.onlinestorespringboot.mapper.OrderMapper;
 import com.example.onlinestorespringboot.mapper.ProductMapper;
@@ -15,6 +16,7 @@ import com.example.onlinestorespringboot.model.enums.Status;
 import com.example.onlinestorespringboot.repository.AddressRepository;
 import com.example.onlinestorespringboot.repository.UserRepository;
 import com.example.onlinestorespringboot.service.UserService;
+import com.example.onlinestorespringboot.util.Messages;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -44,10 +46,12 @@ public class UserServiceImpl implements UserService {
     ProductMapper productMapper;
     OrderMapper orderMapper;
 
+    I18nUtil i18nUtil;
+
     @Override
     public UserDto findByEmail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("User with email " + email + " was not found"));
+                new UserNotFoundException(i18nUtil.getMessage(Messages.USER_ERROR_EMAIL_NOT_FOUND, email)));
         return userMapper.toDTO(user);
     }
 
@@ -58,13 +62,13 @@ public class UserServiceImpl implements UserService {
             String email = (String) authentication.getPrincipal();
             return findByEmail(email);
         }
-        throw new UserNotFoundException("User wasn't found in Context");
+        throw new UserNotFoundException(i18nUtil.getMessage(Messages.USER_ERROR_CONTEXT_NOT_FOUND));
     }
 
     @Override
     public UserDto findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
-                new UserNotFoundException("User with id " + id + " was not found"));
+                new UserNotFoundException(i18nUtil.getMessage(Messages.USER_ERROR_ID_NOT_FOUND, String.valueOf(id))));
         return userMapper.toDTO(user);
     }
 
