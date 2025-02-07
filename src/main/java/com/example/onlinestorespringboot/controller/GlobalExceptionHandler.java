@@ -60,4 +60,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<AppErrorDto> handleUserUpdatingException(UserUpdatingException userUpdatingException) {
         return new ResponseEntity<>(new AppErrorDto(userUpdatingException.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(RefreshTokenException.class)
+    public ResponseEntity<AppErrorDto> handleRefreshTokenException(RefreshTokenException refreshTokenException) {
+        return new ResponseEntity<>(new AppErrorDto(refreshTokenException.getMessage()), HttpStatus.FORBIDDEN);
+    }
 }

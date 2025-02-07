@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Component
 @Setter
 @Getter
-public class JwtTokenUtils {
+public class JwtAccessTokenUtils {
 
     @Value("${jwt.secret}")
     private String secret;

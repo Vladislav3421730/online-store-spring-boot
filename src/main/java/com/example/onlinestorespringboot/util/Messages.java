@@ -26,4 +26,5 @@ public class Messages {
     public static final String PRODUCT_SUCCESS_DELETED = "product.success.deleted";
     public static final String USER_SUCCESS_UPDATED = "user.success.updated";
     public static final String USER_SUCCESS_DELETED = "user.success.deleted";
+    public static final String REFRESH_TOKEN_ERROR = "token.error";
 }

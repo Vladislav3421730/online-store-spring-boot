@@ -2,6 +2,7 @@ package com.example.onlinestorespringboot.service.Impl;
 
 import com.example.onlinestorespringboot.dto.*;
 import com.example.onlinestorespringboot.exception.LoginFailedException;
+import com.example.onlinestorespringboot.exception.RefreshTokenException;
 import com.example.onlinestorespringboot.exception.RegistrationFailedException;
 import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.mapper.UserMapper;
@@ -9,19 +10,16 @@ import com.example.onlinestorespringboot.model.User;
 import com.example.onlinestorespringboot.model.enums.Role;
 import com.example.onlinestorespringboot.repository.UserRepository;
 import com.example.onlinestorespringboot.service.AuthService;
-import com.example.onlinestorespringboot.util.JwtTokenUtils;
+import com.example.onlinestorespringboot.util.JwtAccessTokenUtils;
+import com.example.onlinestorespringboot.util.JwtRefreshTokenUtils;
 import com.example.onlinestorespringboot.util.Messages;
-import com.example.onlinestorespringboot.wrapper.UserDetailsWrapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +35,8 @@ public class AuthServiceImpl implements AuthService {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     AuthenticationManager authenticationManager;
-    JwtTokenUtils jwtTokenUtils;
+    JwtAccessTokenUtils jwtAccessTokenUtils;
+    JwtRefreshTokenUtils jwtRefreshTokenUtils;
     I18nUtil i18nUtil;
 
     @Override
@@ -46,10 +45,28 @@ public class AuthServiceImpl implements AuthService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         } catch (BadCredentialsException badCredentialsException) {
             log.error("error: {}", badCredentialsException.getMessage());
-            throw new LoginFailedException(i18nUtil.getMessage(Messages.LOGIN_ERROR,user.getEmail()));
+            throw new LoginFailedException(i18nUtil.getMessage(Messages.LOGIN_ERROR, user.getEmail()));
         }
         User userDB = userRepository.findByEmail(user.getEmail()).get();
-        return new JwtResponseDto(jwtTokenUtils.generateToken(userDB));
+        return JwtResponseDto.builder()
+                .accessToken(jwtAccessTokenUtils.generateToken(userDB))
+                .refreshToken(jwtRefreshTokenUtils.generateRefreshToken(user.getEmail()))
+                .build();
+    }
+
+    @Override
+    public JwtResponseDto refreshToken(String token) {
+        if (!jwtRefreshTokenUtils.isRefreshTokenValid(token)) {
+            log.error("Refresh token expired");
+            throw new RefreshTokenException(i18nUtil.getMessage(Messages.REFRESH_TOKEN_ERROR));
+        }
+        String email = jwtRefreshTokenUtils.getEmailFromRefreshToken(token);
+        jwtRefreshTokenUtils.deleteToken(token);
+        User userDB = userRepository.findByEmail(email).get();
+        return JwtResponseDto.builder()
+                .accessToken(jwtAccessTokenUtils.generateToken(userDB))
+                .refreshToken(jwtRefreshTokenUtils.generateRefreshToken(email))
+                .build();
     }
 
     @Override

@@ -20,6 +20,7 @@ public class AuthController {
 
     AuthService authService;
 
+
     @PostMapping("/login")
     public ResponseEntity<JwtResponseDto> createToken(@RequestBody @Valid LoginUserDto userDto) {
         JwtResponseDto jwtResponseDto = authService.createAuthToken(userDto);
@@ -30,5 +31,11 @@ public class AuthController {
     public ResponseEntity<UserDto> registerUser(@RequestBody @Valid RegisterUserDto registerUserDto) {
         UserDto userDto = authService.registerUser(registerUserDto);
         return ResponseEntity.ok(userDto);
+    }
+
+    @PostMapping("/refreshToken")
+    public ResponseEntity<JwtResponseDto> refreshToken(@RequestBody TokenRequestDto tokenRequestDto) {
+        JwtResponseDto jwtResponseDto = authService.refreshToken(tokenRequestDto.getRefreshToken());
+        return ResponseEntity.ok(jwtResponseDto);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.onlinestorespringboot.config;
 
 import com.example.onlinestorespringboot.dto.AppErrorDto;
-import com.example.onlinestorespringboot.util.JwtTokenUtils;
+import com.example.onlinestorespringboot.util.JwtAccessTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    JwtTokenUtils jwtTokenUtils;
+    JwtAccessTokenUtils jwtAccessTokenUtils;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -45,7 +45,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             jwt = authHeader.substring(7);
             try {
                 log.info("Try getting token");
-                username = jwtTokenUtils.getUsername(jwt);
+                username = jwtAccessTokenUtils.getUsername(jwt);
             } catch (ExpiredJwtException e) {
                 log.error("Token expiration time has passed");
                 handleException(response, "Token expiration time has passed", HttpServletResponse.SC_UNAUTHORIZED);
@@ -73,7 +73,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                     username,
                     null,
-                    jwtTokenUtils.getRoles(jwt).stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+                    jwtAccessTokenUtils.getRoles(jwt).stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
             );
             SecurityContextHolder.getContext().setAuthentication(token);
         }
