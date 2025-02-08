@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface UserService {
 
+    UserDto saveUser(RegisterUserDto registerUserDto);
+
     UserDto getUser();
 
     UserDto findByEmail(String email);

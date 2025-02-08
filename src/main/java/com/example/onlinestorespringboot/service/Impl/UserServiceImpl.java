@@ -12,6 +12,7 @@ import com.example.onlinestorespringboot.model.Address;
 import com.example.onlinestorespringboot.model.Cart;
 import com.example.onlinestorespringboot.model.Order;
 import com.example.onlinestorespringboot.model.User;
+import com.example.onlinestorespringboot.model.enums.Role;
 import com.example.onlinestorespringboot.model.enums.Status;
 import com.example.onlinestorespringboot.repository.AddressRepository;
 import com.example.onlinestorespringboot.repository.UserRepository;
@@ -26,10 +27,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
@@ -46,17 +49,34 @@ public class UserServiceImpl implements UserService {
     ProductMapper productMapper;
     OrderMapper orderMapper;
 
+    PasswordEncoder passwordEncoder;
+
     I18nUtil i18nUtil;
 
     @Override
     public UserDto findByEmail(String email) {
+        log.info("Trying find user by email {}", email);
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException(i18nUtil.getMessage(Messages.USER_ERROR_EMAIL_NOT_FOUND, email)));
         return userMapper.toDTO(user);
     }
 
     @Override
+    @Transactional
+    public UserDto saveUser(RegisterUserDto registerUserDto) {
+        log.info("Creating new user entity for: {}", registerUserDto.getEmail());
+        User userDB = userMapper.toNewEntity(registerUserDto);
+        userDB.setPassword(passwordEncoder.encode(userDB.getPassword()));
+        userDB.setRoleSet(Set.of(Role.ROLE_USER));
+
+        User savedUser = userRepository.save(userDB);
+        log.info("User {} registered successfully", userDB.getEmail());
+        return userMapper.toDTO(savedUser);
+    }
+
+    @Override
     public UserDto getUser() {
+        log.info("Trying get user by authentication in security");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String email = (String) authentication.getPrincipal();
@@ -67,6 +87,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findById(Long id) {
+        log.info("Trying find user by id {}", id);
         User user = userRepository.findById(id).orElseThrow(() ->
                 new UserNotFoundException(i18nUtil.getMessage(Messages.USER_ERROR_ID_NOT_FOUND, String.valueOf(id))));
         return userMapper.toDTO(user);
@@ -74,6 +95,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDto> findAll(PageRequest pageRequest) {
+        log.info("Find all users");
         return userRepository.findAll(pageRequest)
                 .map(userMapper::toDTO);
     }
@@ -101,7 +123,18 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void makeOrder(UserDto userDto, OrderRequestDto orderRequestDto) {
+        log.info("Making an order for user: {}", userDto.getEmail());
 
+        User user = userMapper.toEntity(userDto);
+        Order order = createOrder(orderRequestDto);
+        processAddress(user, order);
+        createOrderItems(user, order);
+
+        finalizeOrder(user, order);
+        log.info("Order for user {} created successfully", userDto.getEmail());
+    }
+
+    private Order createOrder(OrderRequestDto orderRequestDto) {
         BigDecimal totalPrice = BigDecimal.valueOf(orderRequestDto.getTotalCoast());
         AddressDto addressDto = orderRequestDto.getAddress();
 
@@ -109,12 +142,13 @@ public class UserServiceImpl implements UserService {
                 .totalPrice(totalPrice)
                 .address(addressDto)
                 .build();
-        log.info("Making an order for user: {}", userDto.getEmail());
 
         orderDto.setStatus(Status.ACCEPTED.getDisplayName());
-        User user = userMapper.toEntity(userDto);
-        Order order = orderMapper.toEntity(orderDto);
-        log.info("address: {}", order.getAddress());
+        return orderMapper.toEntity(orderDto);
+    }
+
+    private void processAddress(User user, Order order) {
+        log.info("Processing address: {}", order.getAddress());
 
         List<Address> addresses = user.getOrders().stream()
                 .map(Order::getAddress)
@@ -125,15 +159,19 @@ public class UserServiceImpl implements UserService {
             order.getAddress().setId(null);
             addressRepository.save(order.getAddress());
         }
+    }
 
+    private void createOrderItems(User user, Order order) {
         order.setOrderItems(user.getCarts().stream()
                 .map(cart -> oderItemCartMapper.map(cart, order))
                 .toList());
+    }
+
+    private void finalizeOrder(User user, Order order) {
         user.getCarts().clear();
         user.addOrderToList(order);
-
-        log.info("Order for user {} created successfully", userDto.getEmail());
         userRepository.save(user);
     }
+
 
 }

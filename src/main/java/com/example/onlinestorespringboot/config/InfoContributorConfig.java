@@ -20,8 +20,8 @@ public class InfoContributorConfig implements InfoContributor {
     @Override
     public void contribute(Info.Builder builder) {
         Map<String, Object> app = new HashMap<>();
-        app.put("name",appName);
-        app.put("version",appVersion);
+        app.put("name", appName);
+        app.put("version", appVersion);
         builder.withDetail("app", app);
     }
 }

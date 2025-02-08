@@ -10,6 +10,12 @@ import com.example.onlinestorespringboot.service.ProductService;
 import com.example.onlinestorespringboot.service.UserService;
 import com.example.onlinestorespringboot.util.Messages;
 import com.example.onlinestorespringboot.util.OrderPayingValidator;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +31,19 @@ import java.math.BigDecimal;
 @Slf4j
 @RequestMapping("/api/cart")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Tag(name = "Cart", description = "Endpoints for managing cart items (add, remove, update quantity, etc.)")
+@ApiResponses({
+        @ApiResponse(
+                responseCode = "401",
+                description = "Unauthorized",
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+        ),
+        @ApiResponse(
+                responseCode = "403",
+                description = "Forbidden",
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+        )
+})
 public class CartController {
 
     ProductService productService;
@@ -33,6 +52,19 @@ public class CartController {
     I18nUtil i18nUtil;
 
     @PostMapping
+    @Operation(summary = "Create an order", description = "Processes the order request and creates an order for the user.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Order created successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Error with making order",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            )
+    })
     public ResponseEntity<ResponseDto> makeOrder(@RequestBody @Valid OrderRequestDto orderRequest) {
         log.info("Received order request: {}", orderRequest);
         UserDto user = userService.getUser();
@@ -45,6 +77,19 @@ public class CartController {
     }
 
     @PostMapping("/add/{id}")
+    @Operation(summary = "Add product to cart", description = "Adds a product to the user's cart by product ID.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Product added successfully to cart",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Error during adding product",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            )
+    })
     public ResponseEntity<ResponseDto> addProductToCart(@PathVariable Long id) {
         ProductDto productDto = productService.findById(id);
         if (productDto.getAmount() == 0) {
@@ -56,6 +101,19 @@ public class CartController {
     }
 
     @PutMapping("/increment/{index}")
+    @Operation(summary = "Increment product quantity", description = "Increases the quantity of a product in the user's cart by index.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Product in cart was incremented successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Error during incrementing product in cart",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            )
+    })
     public ResponseEntity<ResponseDto> incrementAmountOfProduct(@PathVariable Integer index) {
         UserDto user = userService.getUser();
         if (!cartService.incrementAmountOfCartInBasket(user.getCarts(), index)) {
@@ -65,13 +123,40 @@ public class CartController {
     }
 
     @PutMapping("/decrement/{index}")
+    @Operation(summary = "Decrement product quantity", description = "Decreases the quantity of a product in the user's cart by index.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Product in cart was decremented successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Error during decrementing product in cart",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            )
+    })
     public ResponseEntity<ResponseDto> decrementAmountOfProduct(@PathVariable Integer index) {
         UserDto user = userService.getUser();
         cartService.decrementAmountOfCartInBasket(user.getCarts(), index);
         return ResponseEntity.ok(new ResponseDto(i18nUtil.getMessage(Messages.CART_SUCCESS_CART_UPDATED)));
     }
 
+
     @DeleteMapping("/delete/{index}")
+    @Operation(summary = "Delete product from cart", description = "Removes a product from the user's cart by index.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Product in cart was deleted successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Error during deleting product in cart",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            )
+    })
     public ResponseEntity<ResponseDto> deleteProductFromCart(@PathVariable Integer index) {
         UserDto user = userService.getUser();
         cartService.deleteCartFromBasket(user.getCarts(), index);

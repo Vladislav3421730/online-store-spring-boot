@@ -14,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 @Configuration
@@ -26,7 +27,8 @@ public class I18nConfig implements WebMvcConfigurer {
     @Bean
     public AcceptHeaderLocaleResolver acceptHeaderLocaleResolver() {
         AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
-        localeResolver.setDefaultLocale(Locale.getDefault());
+        localeResolver.setDefaultLocale(Locale.ENGLISH);
+        Locale.setDefault(Locale.ENGLISH);
         return localeResolver;
     }
 
@@ -46,7 +48,7 @@ public class I18nConfig implements WebMvcConfigurer {
         ReloadableResourceBundleMessageSource messageSource
                 = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("classpath:messages");
-        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         return messageSource;
     }
 }

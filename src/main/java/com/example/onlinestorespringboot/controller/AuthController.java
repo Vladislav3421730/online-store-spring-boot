@@ -2,6 +2,12 @@ package com.example.onlinestorespringboot.controller;
 
 import com.example.onlinestorespringboot.dto.*;
 import com.example.onlinestorespringboot.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,25 +22,64 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Tag(name = "Authentication", description = "Endpoints for user authentication and authorization (login, registration, token refresh)")
 public class AuthController {
 
     AuthService authService;
 
-
     @PostMapping("/login")
+    @Operation(summary = "User login", description = "Authenticates user and returns a Access and Refresh tokens.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully authenticated",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid login credentials",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            )
+    })
     public ResponseEntity<JwtResponseDto> createToken(@RequestBody @Valid LoginUserDto userDto) {
         JwtResponseDto jwtResponseDto = authService.createAuthToken(userDto);
         return ResponseEntity.ok(jwtResponseDto);
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Registration", description = "Registers a user and returns the registered user")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully registered user",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Registration failed",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            )
+    })
     public ResponseEntity<UserDto> registerUser(@RequestBody @Valid RegisterUserDto registerUserDto) {
         UserDto userDto = authService.registerUser(registerUserDto);
         return ResponseEntity.ok(userDto);
     }
 
     @PostMapping("/refreshToken")
-    public ResponseEntity<JwtResponseDto> refreshToken(@RequestBody TokenRequestDto tokenRequestDto) {
+    @Operation(summary = "Refresh token", description = "Refresh token, return access token and sent refresh token")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully refreshed token",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid refresh token",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            )
+    })
+    public ResponseEntity<JwtResponseDto> refreshToken(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
         JwtResponseDto jwtResponseDto = authService.refreshToken(tokenRequestDto.getRefreshToken());
         return ResponseEntity.ok(jwtResponseDto);
     }

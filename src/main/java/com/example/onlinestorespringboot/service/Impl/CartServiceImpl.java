@@ -1,6 +1,7 @@
 package com.example.onlinestorespringboot.service.Impl;
 
 import com.example.onlinestorespringboot.dto.CartDto;
+import com.example.onlinestorespringboot.exception.ExceedingQuantityException;
 import com.example.onlinestorespringboot.exception.WrongIndexException;
 import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.mapper.CartMapper;
@@ -40,15 +41,13 @@ public class CartServiceImpl implements CartService {
             log.error("The quantity of goods in the basket is equal to the quantity in the warehouse, " +
                             "it is impossible to increase the quantity of goods {}. Available quantity in warehouse: {}",
                     cart.getProduct().getTitle(), cart.getProduct().getAmount());
-            throw new IllegalStateException(i18nUtil.getMessage(Messages.CART_ERROR_QUANTITY_EXCEEDS_STOCK,
+            throw new ExceedingQuantityException(i18nUtil.getMessage(Messages.CART_ERROR_QUANTITY_EXCEEDS_STOCK,
                     cart.getProduct().getTitle(), String.valueOf(cart.getProduct().getAmount())));
         }
         cart.setAmount(cart.getAmount() + 1);
-        userCarts.set(index, cart);
         Cart updatedCart = cartMapper.toEntity(cart);
         cartRepository.save(updatedCart);
-        log.info("The quantity of product '{}' has been increased by 1. New quantity: {}",
-                cart.getProduct().getTitle(), cart.getAmount());
+        log.info("The quantity of product '{}' has been increased by 1. New quantity: {}", cart.getProduct().getTitle(), cart.getAmount());
         return true;
     }
 
@@ -61,7 +60,6 @@ public class CartServiceImpl implements CartService {
         }
         CartDto cart = userCarts.get(index);
         if (cart.getAmount() == 1) {
-            userCarts.remove(index);
             cartRepository.deleteById(cart.getId());
             log.info("The product '{}' has been removed from the user's cart", cart.getProduct().getTitle());
         } else {

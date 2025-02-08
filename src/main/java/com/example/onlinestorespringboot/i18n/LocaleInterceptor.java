@@ -1,7 +1,6 @@
 package com.example.onlinestorespringboot.i18n;
 
 import jakarta.annotation.Resource;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -16,12 +15,8 @@ public class LocaleInterceptor implements HandlerInterceptor {
     @Resource(name = "localeHolder")
     LocalHolder localHolder;
 
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws ServletException {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
-        if (localeResolver == null) {
-            throw new IllegalStateException("No LocaleResolver found: not in a DispatcherServlet request?");
-        }
-
         if (localeResolver instanceof AcceptHeaderLocaleResolver headerLocaleResolver) {
             localHolder.setCurrentLocale(headerLocaleResolver.resolveLocale(request));
         } else {

@@ -32,7 +32,7 @@ public class JwtAccessTokenUtils {
     private Duration jwtLifetime;
 
 
-    public String generateToken(User user) {
+    public String generateAccessToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         List<String> rolesList = user.getRoleSet().stream()
                 .map(Role::getAuthority)

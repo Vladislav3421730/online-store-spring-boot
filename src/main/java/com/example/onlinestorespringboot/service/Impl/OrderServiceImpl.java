@@ -64,13 +64,12 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void update(OrderDto orderDto) {
         log.info("Updating order with ID: {}", orderDto.getId());
-        if (orderRepository.existsById(orderDto.getId())) {
-            Order order = orderMapper.toEntity(orderDto);
-            orderRepository.save(order);
-            log.info("Order with ID: {} updated successfully", orderDto.getId());
-        } else {
-            log.info("Order with id {} not found", orderDto.getId());
+        if (!orderRepository.existsById(orderDto.getId())) {
+            log.error("Order with id {} not found", orderDto.getId());
             throw new OrderNotFoundException(i18nUtil.getMessage(Messages.ORDER_ERROR_NOT_FOUND, String.valueOf(orderDto.getId())));
         }
+        Order order = orderMapper.toEntity(orderDto);
+        orderRepository.save(order);
+        log.info("Order with ID: {} updated successfully", orderDto.getId());
     }
 }

@@ -31,6 +31,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void save(CreateProductDto createProductDTO) {
+        log.info("Save product {}",createProductDTO);
         Product product = productMapper.toNewEntity(createProductDTO);
         productRepository.save(product);
     }
@@ -67,6 +68,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDto update(ProductDto productDto) {
+        if (!productRepository.existsById(productDto.getId())) {
+            log.error("Products with id {} not found", productDto.getId());
+            throw new ProductNotFoundException(i18nUtil.getMessage(Messages.PRODUCT_ERROR_NOT_FOUND, String.valueOf(productDto.getId())));
+        }
         log.info("Updating product with id: {}", productDto.getId());
         Product product = productMapper.toEntity(productDto);
         Product updatedProduct = productRepository.save(product);
@@ -77,13 +82,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void delete(Long id) {
-        if (productRepository.existsById(id)) {
-            log.info("Deleting product with id: {}", id);
-            productRepository.deleteProductWithOrderItems(id);
-            log.info("Product with id {} deleted successfully", id);
-        } else
+        if (!productRepository.existsById(id)) {
+            log.error("Products with id {} not found", id);
             throw new ProductNotFoundException(i18nUtil.getMessage(Messages.PRODUCT_ERROR_NOT_FOUND, String.valueOf(id)));
-
+        }
+        log.info("Deleting product with id: {}", id);
+        productRepository.deleteProductWithOrderItems(id);
+        log.info("Product with id {} deleted successfully", id);
     }
 
 }
