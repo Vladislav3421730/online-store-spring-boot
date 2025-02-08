@@ -29,7 +29,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
         String acceptLanguageHeader = request.getHeader("Accept-Language");
-        Locale locale = Locale.forLanguageTag(acceptLanguageHeader != null ? acceptLanguageHeader : "ru");
+        Locale locale = Locale.forLanguageTag(acceptLanguageHeader != null ? acceptLanguageHeader : "en");
 
         i18nUtil.setLocale(locale);
 

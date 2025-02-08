@@ -39,9 +39,12 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(HttpMethod.DELETE, "/api/products/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/products").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/{id}").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/products").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.POST, "/api/products").hasRole("MANAGER")
+                        .requestMatchers("/api/order/**").hasRole("MANAGER")
+                        .requestMatchers("/api/cart/**", "/api/user").authenticated()
+                        .requestMatchers("/api/user/**").hasRole("ADMIN")
                         .anyRequest().permitAll())
                 .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex

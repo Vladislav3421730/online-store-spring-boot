@@ -31,7 +31,7 @@ public class User {
     @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
     private Long id;
 
-    @Size(min = 5, message = "Username length must be more or equal than 5")
+    @Size(min = 3, message = "Username length must be more or equal than 5")
     @NotBlank
     private String username;
     @Size(min = 6, message = "Password length must be more or equal than 6 ")

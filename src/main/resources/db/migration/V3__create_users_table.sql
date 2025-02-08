@@ -8,7 +8,7 @@ CREATE SEQUENCE public.user_id_seq
 CREATE TABLE public.users
 (
     id           BIGINT PRIMARY KEY    DEFAULT nextval('user_id_seq'),
-    username     VARCHAR(255) NOT NULL CHECK (LENGTH(username) >= 5),
+    username     VARCHAR(255) NOT NULL CHECK (LENGTH(username) >= 3),
     password     VARCHAR(255) NOT NULL CHECK (LENGTH(password) >= 6),
     email        VARCHAR(255) UNIQUE CHECK (POSITION('@' IN email) > 1),
     is_bun       BOOLEAN      NOT NULL DEFAULT FALSE,
