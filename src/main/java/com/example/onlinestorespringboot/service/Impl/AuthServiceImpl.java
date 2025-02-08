@@ -57,7 +57,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public JwtResponseDto refreshToken(String token) {
+    public JwtResponseDto refreshToken(TokenRefreshRequestDto refreshToken) {
+        String token = refreshToken.getRefreshToken();
         log.info("Processing refresh token");
         if (!jwtRefreshTokenUtils.isRefreshTokenValid(token)) {
             log.error("Refresh token validation failed: token is expired or invalid");

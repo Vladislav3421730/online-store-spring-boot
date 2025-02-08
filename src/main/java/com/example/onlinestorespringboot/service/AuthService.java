@@ -6,7 +6,7 @@ public interface AuthService {
 
     JwtResponseDto createAuthToken(LoginUserDto user);
 
-    JwtResponseDto refreshToken(String token);
+    JwtResponseDto refreshToken(TokenRefreshRequestDto tokenRefreshRequestDto);
 
     UserDto registerUser(RegisterUserDto user);
 

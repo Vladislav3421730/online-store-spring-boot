@@ -79,8 +79,8 @@ public class AuthController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             )
     })
-    public ResponseEntity<JwtResponseDto> refreshToken(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
-        JwtResponseDto jwtResponseDto = authService.refreshToken(tokenRequestDto.getRefreshToken());
+    public ResponseEntity<JwtResponseDto> refreshToken(@RequestBody @Valid TokenRefreshRequestDto tokenRefreshRequestDto) {
+        JwtResponseDto jwtResponseDto = authService.refreshToken(tokenRefreshRequestDto);
         return ResponseEntity.ok(jwtResponseDto);
     }
 }
