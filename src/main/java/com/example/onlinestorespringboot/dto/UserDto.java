@@ -21,8 +21,8 @@ public class UserDto {
     @Schema(description = "Unique identifier for the user", example = "1")
     private Long id;
 
-    @Schema(description = "Username of the user. Minimum length is 5 characters.", example = "john_doe")
-    @Size(min = 5, message = "Username length must be more or equal than 5")
+    @Schema(description = "Username of the user. Minimum length is 3 characters.", example = "john_doe")
+    @Size(min = 3, message = "Username length must be more or equal than 3")
     private String username;
 
     @Schema(description = "Password for the user. Minimum length is 6 characters.", example = "password123")

@@ -1,5 +1,6 @@
 package com.example.factory;
 
+import com.example.onlinestorespringboot.dto.CreateProductDto;
 import com.example.onlinestorespringboot.dto.ProductDto;
 import com.example.onlinestorespringboot.model.Product;
 
@@ -35,6 +36,35 @@ public class ProductFactory {
         return Product.builder()
                 .id(id)
                 .title(title)
+                .build();
+    }
+
+    public static CreateProductDto createProductDto() {
+        return CreateProductDto.builder()
+                .title("New Laptop")
+                .description("Laptop with 16GB RAM")
+                .amount(5)
+                .category("Electronics")
+                .coast(BigDecimal.valueOf(200.3))
+                .build();
+    }
+
+    public static ProductDto createUpdatedProductDto() {
+        return ProductDto.builder()
+                .id(1L)
+                .title("New Laptop")
+                .description("Laptop with 16GB RAM")
+                .amount(5)
+                .category("Electronics")
+                .coast(BigDecimal.valueOf(200.3))
+                .build();
+    }
+
+    public static CreateProductDto createInvalidProductDto() {
+        return CreateProductDto.builder()
+                .amount(5)
+                .category("Electronics")
+                .coast(BigDecimal.valueOf(200.3))
                 .build();
     }
 }

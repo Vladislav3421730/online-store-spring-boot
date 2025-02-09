@@ -57,7 +57,7 @@ VALUES
     (1, 'ROLE_ADMIN'),
     (2, 'ROLE_USER'),
     (3, 'ROLE_MANAGER'),
-    (4, 'USER_ADMIN');
+    (4, 'ROLE_ADMIN');
 
 INSERT INTO public.cart_of_goods (amount, product_id, user_id)
 VALUES

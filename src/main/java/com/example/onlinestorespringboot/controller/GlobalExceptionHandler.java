@@ -73,25 +73,4 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new AppErrorDto(refreshTokenException.getMessage(),403), HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<AppErrorDto> handleNoHandlerFoundException(NoHandlerFoundException ex) {
-        return new ResponseEntity<>(new AppErrorDto("Endpoint not found: " + ex.getRequestURL(),404), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<AppErrorDto> handleMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
-        log.error("Method not allowed: {}", ex.getMessage());
-        return new ResponseEntity<>(new AppErrorDto(ex.getMessage(), 405), HttpStatus.METHOD_NOT_ALLOWED);
-    }
-
-    @ExceptionHandler(Exception.class)
-    @ApiResponse(
-            responseCode = "500",
-            description = "Internal server error",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
-    )
-    public ResponseEntity<AppErrorDto> handleException(Exception exception) {
-        log.error("Unexpected error: {}", exception.getMessage());
-        return new ResponseEntity<>(new AppErrorDto(exception.getMessage(),500), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 }

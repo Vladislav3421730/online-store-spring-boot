@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 @Schema(description = "DTO for registering a new user")
 public class RegisterUserDto {
 
-    @Schema(description = "Username for the new user. Must be at least 5 characters long.", example = "john_doe")
-    @Size(min = 5, message = "Username must be at least 5 characters long.")
+    @Schema(description = "Username for the new user. Must be at least 3 characters long.", example = "john_doe")
+    @Size(min = 3, message = "Username must be at least 3 characters long.")
     @NotBlank(message = "Username cannot be blank.")
     private String username;
 
@@ -38,5 +38,6 @@ public class RegisterUserDto {
     private String phoneNumber;
 
     @Schema(description = "Confirm password to verify the password entered by the user.", example = "strongpassword123")
+    @NotBlank(message = "Confirm cannot be blank.")
     private String confirmPassword;
 }

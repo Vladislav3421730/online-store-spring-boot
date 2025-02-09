@@ -1,8 +1,6 @@
 package com.example.factory;
 
-import com.example.onlinestorespringboot.dto.ProductDto;
 import com.example.onlinestorespringboot.dto.RegisterUserDto;
-import com.example.onlinestorespringboot.model.Product;
 import com.example.onlinestorespringboot.model.User;
 
 public class UserFactory {
@@ -41,6 +39,25 @@ public class UserFactory {
                 .password("q1w2e3")
                 .confirmPassword("q1w2e3")
                 .phoneNumber("+375445672387")
+                .build();
+    }
+
+    public static RegisterUserDto createRegisterUserDtoForControllers() {
+        return RegisterUserDto.builder()
+                .username("username")
+                .phoneNumber("+375445716964")
+                .email("savetest@gmail.com")
+                .password("q1w2e3")
+                .confirmPassword("q1w2e3")
+                .build();
+    }
+
+    public static RegisterUserDto createInvalidRegisterUserDtoForControllers() {
+        return RegisterUserDto.builder()
+                .username("username")
+                .phoneNumber("+375445716964")
+                .email("savetest@gmail.com")
+                .confirmPassword("q1w2e3")
                 .build();
     }
 
