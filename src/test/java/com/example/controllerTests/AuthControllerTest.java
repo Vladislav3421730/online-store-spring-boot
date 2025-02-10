@@ -63,14 +63,8 @@ public class AuthControllerTest {
     @BeforeAll
     static void setup() {
         environment.start();
-        loginUserDto = new LoginUserDto();
-        loginUserDto.setEmail("user@gmail.com");
-        loginUserDto.setPassword("q1w2e3");
-
-        invalidLoginUserDto = new LoginUserDto();
-        invalidLoginUserDto.setEmail("vlad@gmail.com");
-        invalidLoginUserDto.setPassword("invalidPassword");
-
+        loginUserDto = new LoginUserDto("user@gmail.com", "q1w2e3");
+        invalidLoginUserDto = new LoginUserDto("vlad@gmail.com", "invalidPassword");
         registerUserDto = UserFactory.createRegisterUserDtoForControllers();
         invalidRegisterUserDto = UserFactory.createInvalidRegisterUserDtoForControllers();
     }
@@ -199,7 +193,5 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.message", notNullValue()))
                 .andExpect(jsonPath("$.code", is(403)));
     }
-
-
 }
 

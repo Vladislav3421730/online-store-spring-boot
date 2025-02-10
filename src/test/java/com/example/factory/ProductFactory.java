@@ -60,6 +60,17 @@ public class ProductFactory {
                 .build();
     }
 
+    public static ProductDto createProductDtoWithZeroAmount() {
+        return ProductDto.builder()
+                .id(1L)
+                .title("New Laptop")
+                .description("Laptop with 16GB RAM")
+                .amount(0)
+                .category("Electronics")
+                .coast(BigDecimal.valueOf(200.3))
+                .build();
+    }
+
     public static CreateProductDto createInvalidProductDto() {
         return CreateProductDto.builder()
                 .amount(5)

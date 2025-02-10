@@ -1,8 +1,6 @@
 package com.example.onlinestorespringboot.service.Impl;
 
-
 import com.example.onlinestorespringboot.dto.UserDto;
-import com.example.onlinestorespringboot.exception.UserNotFoundException;
 import com.example.onlinestorespringboot.exception.UserUpdatingException;
 import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.mapper.UserMapper;

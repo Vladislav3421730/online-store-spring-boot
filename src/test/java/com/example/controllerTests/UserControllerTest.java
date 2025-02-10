@@ -2,7 +2,7 @@ package com.example.controllerTests;
 
 import com.example.onlinestorespringboot.OnlineStoreSpringBootApplication;
 import com.example.onlinestorespringboot.dto.LoginUserDto;
-import com.jayway.jsonpath.JsonPath;
+import com.example.utils.TokenUtils;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -58,10 +57,7 @@ class UserControllerTest {
     @BeforeAll
     static void setup() {
         environment.start();
-
-        loginUserDtoWithAdminRole = new LoginUserDto();
-        loginUserDtoWithAdminRole.setEmail("vlad@gmail.com");
-        loginUserDtoWithAdminRole.setPassword("q1w2e3");
+        loginUserDtoWithAdminRole = new LoginUserDto("vlad@gmail.com", "q1w2e3");
     }
 
     @AfterAll
@@ -74,7 +70,7 @@ class UserControllerTest {
     @DisplayName("Test get user")
     void testGetUser() throws Exception {
 
-        String accessToken = getAccessTokenFromRequest(loginUserDtoWithAdminRole);
+        String accessToken = TokenUtils.getAccessTokenFromRequest(mockMvc, loginUserDtoWithAdminRole);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/user")
                         .header("Authorization", "Bearer " + accessToken))
@@ -124,7 +120,7 @@ class UserControllerTest {
     @DisplayName("Test bun user")
     void testBanUser() throws Exception {
 
-        String accessToken = getAccessTokenFromRequest(loginUserDtoWithAdminRole);
+        String accessToken = TokenUtils.getAccessTokenFromRequest(mockMvc, loginUserDtoWithAdminRole);
 
         String response = mockMvc.perform(MockMvcRequestBuilders.get("/api/user/{id}", 2L)
                         .header("Authorization", "Bearer " + accessToken))
@@ -146,7 +142,7 @@ class UserControllerTest {
     @DisplayName("Test delete user by id")
     void testDeleteUser() throws Exception {
 
-        String accessToken = getAccessTokenFromRequest(loginUserDtoWithAdminRole);
+        String accessToken = TokenUtils.getAccessTokenFromRequest(mockMvc, loginUserDtoWithAdminRole);
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/delete/{id}", 2L)
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk())
@@ -158,7 +154,7 @@ class UserControllerTest {
     @DisplayName("Test delete yourself")
     void testDeleteYourself() throws Exception {
 
-        String accessToken = getAccessTokenFromRequest(loginUserDtoWithAdminRole);
+        String accessToken = TokenUtils.getAccessTokenFromRequest(mockMvc, loginUserDtoWithAdminRole);
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/delete/{id}", 1L)
                         .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isBadRequest())
@@ -169,28 +165,12 @@ class UserControllerTest {
     @Test
     @Order(8)
     @DisplayName("Test delete user without role Admin")
-    @WithMockUser(roles = {"USER","MANAGER"})
+    @WithMockUser(roles = {"USER", "MANAGER"})
     void testDeleteUserWithoutRoleAdmin() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/user/delete/{id}", 1L))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message", notNullValue()))
                 .andExpect(jsonPath("$.code", notNullValue()));
-    }
-
-    private String getAccessTokenFromRequest(LoginUserDto loginUserDto) throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginUserDto))
-                .accept(MediaType.APPLICATION_JSON);
-
-        String response = mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", notNullValue()))
-                .andExpect(jsonPath("$.accessToken", notNullValue()))
-                .andExpect(jsonPath("$.refreshToken", notNullValue()))
-                .andReturn().getResponse().getContentAsString();
-
-        return JsonPath.parse(response).read("$.accessToken");
     }
 }

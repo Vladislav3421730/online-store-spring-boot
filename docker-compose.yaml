@@ -1,4 +1,5 @@
 services:
+
   redis:
     image: redis:latest
     restart: always
@@ -6,8 +7,23 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - cache:/data
+      - redis:/data
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: market
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
 
 volumes:
-    cache:
-      driver: local
+  redis:
+    driver: local
+  postgresdata:
+    driver: local
