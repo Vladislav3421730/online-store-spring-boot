@@ -35,3 +35,12 @@ localhost:8080/api/products
 ```bash
 http://localhost:8080/swagger-ui/index.html
 ```
+## Реквизиты для входа
+1. Если хотите войти с ролями USER, MANAGER, ADMIN
+      + Логин:***`vlad@gmail.com`***, Пароль: ***q1w2e3***
+2. Если хотите войти с ролью ADMIN
+      + Логин:***`admin@gmail.com`***, Пароль: ***q1w2e3***
+3. Если хотите войти с ролью MANAGER
+      + Логин:***`manager@gmail.com`***, Пароль: ***q1w2e3***
+4. Если хотите войти с ролю USER
+      + Логин:***`user@gmail.com`***, Пароль: ***q1w2e3***
