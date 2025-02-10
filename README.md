@@ -4,12 +4,14 @@
 * Spring Boot
 * Spring Secutiry
 * Spring Data Jpa
+* Spring Data Validation
 * JWT (access/refresh)
 * Spring Actuator
 * Swagger
 * Redis
+* PostgreSQL
 * Test Containers
-* Docker 
+* Docker
 * Flyway
 * MapStruct
 * Pagination (Page, PageRequest)
