@@ -25,7 +25,7 @@ cd online-store-spring-boot
 ```bash
 docker compose up
 ```
-Затем нужно локально запустить Spring boot приложение, для этого у вам на компьютере должны быть установлена java
+Затем нужно локально запустить Spring boot приложение, для этого у вас на компьютере должна быть установлена java
 ```bash
 java -jar deploy/online-store-spring-boot-0.0.1-SNAPSHOT.jar
 ```
