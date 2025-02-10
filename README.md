@@ -1,5 +1,6 @@
 ﻿# Online Market Rest api
 ## Используемые технологии в проекте 
+
     * Spring Boot
     * Spring Secutiry
     * Spring Data Jpa
@@ -15,22 +16,22 @@
     
 ## Инструкция по запуску 
 Для начало нужно скопировать проект себе локально на компьютер
-'''bash
+```bash
 cd online-store-spring-boot
-'''
+```
 Затем нужно запустить Postgres и Redis через Dcoker
-'''bash
+```bash
 docker compose up
-'''
+```
 Затем нужно локально запустить Spring boot приложение, для этого у вам на компьютере должны быть установлена java
-'''bash
+```bash
 java -jar deploy/online-store-spring-boot-0.0.1-SNAPSHOT.jar
-'''
+```
 После всех манипуляций можно выполнять запросы к Rest Api
-'''bash
+```bash
 localhost:8080/api/products
-'''
+```
 Для перехода на Swagger можно воспользоваться
-'''bash
+```bash
 http://localhost:8080/swagger-ui/index.html
-'''
+```
