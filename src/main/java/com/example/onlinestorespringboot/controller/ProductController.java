@@ -4,6 +4,7 @@ import com.example.onlinestorespringboot.dto.*;
 import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.service.ProductService;
 import com.example.onlinestorespringboot.util.Messages;
+import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,15 +12,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,10 +40,12 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     ProductService productService;
+    Validator validator;
     I18nUtil i18nUtil;
 
-    @PostMapping
-    @Operation(summary = "Save a new product", description = "Creates and saves a new product in the system")
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Save a new product with images", description = "Creates and saves a new product in the system")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "401",
@@ -50,8 +63,21 @@ public class ProductController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
             )
     })
-    public ResponseEntity<ResponseDto> saveProduct(@RequestBody @Valid CreateProductDto createProductDto) {
-        productService.save(createProductDto);
+    public ResponseEntity<ResponseDto> saveProduct(
+            @RequestPart(value = "product") String data,
+            @RequestPart(value = "file", required = false) List<MultipartFile> files) throws MethodArgumentNotValidException {
+
+        CreateProductDto createProductDto = new Gson().fromJson(data, CreateProductDto.class);
+        Set<ConstraintViolation<CreateProductDto>> violations = validator.validate(createProductDto);
+
+        if (!violations.isEmpty()) {
+            BindingResult bindingResult = new BeanPropertyBindingResult(createProductDto, "createProductDto");
+            violations.forEach(violation -> {
+                bindingResult.rejectValue(violation.getPropertyPath().toString(), "", violation.getMessage());
+            });
+            throw new MethodArgumentNotValidException(null, bindingResult);
+        }
+        productService.save(createProductDto, files);
         return ResponseEntity.ok(new ResponseDto(i18nUtil.getMessage(Messages.PRODUCT_SUCCESS_SAVED)));
     }
 

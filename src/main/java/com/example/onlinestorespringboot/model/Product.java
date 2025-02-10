@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -41,5 +43,14 @@ public class Product {
 
     @DecimalMin(value = "0.01", message = "Cost must be greater than or equal to 10.3")
     private BigDecimal coast;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product", orphanRemoval = true)
+    @OrderBy("id ASC")
+    private List<Image> imageList = new ArrayList<>();
+
+    public void addImageToList(Image image){
+        imageList.add(image);
+        image.setProduct(this);
+    }
 
 }

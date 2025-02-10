@@ -1,11 +1,15 @@
 package com.example.onlinestorespringboot.service.Impl;
 
+import com.example.onlinestorespringboot.dto.CreateImageDto;
 import com.example.onlinestorespringboot.dto.CreateProductDto;
 import com.example.onlinestorespringboot.dto.ProductDto;
 import com.example.onlinestorespringboot.dto.ProductFilterDTO;
 import com.example.onlinestorespringboot.exception.ProductNotFoundException;
 import com.example.onlinestorespringboot.i18n.I18nUtil;
+import com.example.onlinestorespringboot.mapper.ImageMapper;
+import com.example.onlinestorespringboot.mapper.MultipartFileMapper;
 import com.example.onlinestorespringboot.mapper.ProductMapper;
+import com.example.onlinestorespringboot.model.Image;
 import com.example.onlinestorespringboot.model.Product;
 import com.example.onlinestorespringboot.repository.ProductRepository;
 import com.example.onlinestorespringboot.service.ProductService;
@@ -18,6 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -27,12 +35,25 @@ public class ProductServiceImpl implements ProductService {
 
     ProductRepository productRepository;
     ProductMapper productMapper;
+    ImageMapper imageMapper;
     I18nUtil i18nUtil;
 
     @Override
-    public void save(CreateProductDto createProductDTO) {
-        log.info("Save product {}",createProductDTO);
+    public void save(CreateProductDto createProductDTO, List<MultipartFile> files) {
+        log.info("Save product {}", createProductDTO);
         Product product = productMapper.toNewEntity(createProductDTO);
+        if (files != null) {
+            List<CreateImageDto> images = files.stream()
+                    .filter(file -> !file.isEmpty())
+                    .map(MultipartFileMapper::map)
+                    .toList();
+
+            product.setImageList(new ArrayList<>());
+            for (CreateImageDto imageDto : images) {
+                Image image = imageMapper.toNewEntity(imageDto);
+                product.addImageToList(image);
+            }
+        }
         productRepository.save(product);
     }
 

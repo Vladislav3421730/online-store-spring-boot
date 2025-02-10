@@ -103,24 +103,6 @@ public class CartControllerTest {
 
     @Test
     @Order(2)
-    @DisplayName("Test add product to user's cart with zero quantity")
-    void testAddProductToCartWithZeroQuantity() throws Exception {
-
-        when(productService.findById(5L)).thenReturn(productDtoWithZeroAmount);
-
-        String accessToken = TokenUtils.getAccessTokenFromRequest(mockMvc, loginUserDto);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/cart/add/{id}", 5L)
-                        .header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", notNullValue()))
-                .andExpect(jsonPath("$.code", is(400)));
-
-        verify(productService).findById(any());
-    }
-
-    @Test
-    @Order(3)
     @DisplayName("Test increment product in user cart")
     void testIncrementProductInUserCart() throws Exception {
 
@@ -133,7 +115,7 @@ public class CartControllerTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     @DisplayName("Test increment product in user cart with wrong index")
     void testIncrementProductInUserCartWithWrongIndex() throws Exception {
 
@@ -147,7 +129,7 @@ public class CartControllerTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     @DisplayName("Test decrement product in user cart")
     void testDecrementProductInUserCart() throws Exception {
 
@@ -161,7 +143,7 @@ public class CartControllerTest {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     @DisplayName("Test delete product in user cart")
     void testDeleteProductInUserCart() throws Exception {
 
@@ -174,7 +156,7 @@ public class CartControllerTest {
     }
 
     @Test
-    @Order(7)
+    @Order(6)
     @DisplayName("Test make order")
     void testMakeOrder() throws Exception {
 

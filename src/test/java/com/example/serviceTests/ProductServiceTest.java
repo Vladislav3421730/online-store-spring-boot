@@ -73,7 +73,7 @@ public class ProductServiceTest {
         when(productMapper.toNewEntity(createProductDto)).thenReturn(firstProduct);
         when(productRepository.save(firstProduct)).thenReturn(firstProduct);
 
-        productService.save(createProductDto);
+        productService.save(createProductDto,List.of());
 
         verify(productMapper).toNewEntity(createProductDto);
         verify(productRepository).save(firstProduct);

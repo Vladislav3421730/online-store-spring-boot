@@ -5,6 +5,7 @@ import com.example.onlinestorespringboot.dto.ProductDto;
 import com.example.onlinestorespringboot.model.Product;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class ProductFactory {
     public static Product createValidProduct() {
@@ -63,6 +64,7 @@ public class ProductFactory {
     public static ProductDto createProductDtoWithZeroAmount() {
         return ProductDto.builder()
                 .id(1L)
+                .imageList(new ArrayList<>())
                 .title("New Laptop")
                 .description("Laptop with 16GB RAM")
                 .amount(0)

@@ -2,6 +2,7 @@ package com.example.onlinestorespringboot.controller;
 
 import com.example.onlinestorespringboot.dto.AppErrorDto;
 import com.example.onlinestorespringboot.exception.*;
+import com.google.gson.JsonSyntaxException;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -71,6 +72,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RefreshTokenException.class)
     public ResponseEntity<AppErrorDto> handleRefreshTokenException(RefreshTokenException refreshTokenException) {
         return new ResponseEntity<>(new AppErrorDto(refreshTokenException.getMessage(),403), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(JsonSyntaxException.class)
+    public ResponseEntity<AppErrorDto> handleJsonSyntaxException(JsonSyntaxException jsonSyntaxException) {
+        return new ResponseEntity<>(new AppErrorDto(jsonSyntaxException.getMessage(),400), HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(FileSavingException.class)
+    public ResponseEntity<AppErrorDto> handleFileSavingException(FileSavingException fileSavingException) {
+        return new ResponseEntity<>(new AppErrorDto(fileSavingException.getMessage(),400), HttpStatus.BAD_REQUEST);
+
     }
 
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
@@ -43,4 +44,6 @@ public class ProductDto {
     @DecimalMin(value = "0.01", message = "Cost must be greater than or equal to 0.01")
     @NotNull(message = "Coast is required")
     private BigDecimal coast;
+
+    private List<ImageDto> imageList;
 }

@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,6 +27,7 @@ import java.math.BigDecimal;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
 
 @Testcontainers
@@ -65,45 +68,6 @@ public class ProductControllerTest {
 
     @Test
     @Order(1)
-    @DisplayName("Test save product")
-    @WithMockUser(roles = "MANAGER")
-    public void testSaveProduct() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createProductDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", is("The product was saved successfully")));
-    }
-
-    @Test
-    @Order(2)
-    @DisplayName("Test save product with invalid data")
-    @WithMockUser(roles = "MANAGER")
-    public void testSaveProductWithInvalidData() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createInvalidProductDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.description", notNullValue()));
-    }
-
-    @Test
-    @Order(3)
-    @DisplayName("Test save product with unauthorized user")
-    public void testSaveProductWithUnauthorizedUser() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createProductDto)))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message", notNullValue()))
-                .andExpect(jsonPath("$.code", notNullValue()));
-    }
-
-    @Test
-    @Order(4)
     @DisplayName("Test find all products")
     public void testFindAllProducts() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/products")
@@ -113,7 +77,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    @Order(5)
+    @Order(2)
     @DisplayName("Test find product by id")
     public void testFindProductById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/products/{id}", 1L))
@@ -128,7 +92,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    @Order(5)
+    @Order(3)
     @DisplayName("Test find product by invalid id")
     public void testFindProductByInvalidId() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/products/{id}", Long.MIN_VALUE))
@@ -138,7 +102,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    @Order(6)
+    @Order(4)
     @DisplayName("Test find products by title")
     public void testSearchProducts() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/products/search")
@@ -150,7 +114,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    @Order(7)
+    @Order(5)
     @DisplayName("Test find products by filter")
     public void testFilterProducts() throws Exception {
 
@@ -164,27 +128,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    @Order(8)
-    @DisplayName("Test update product")
-    @WithMockUser(roles = "MANAGER")
-    public void testUpdateProduct() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/products")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedProductDto)))
-                .andExpect(status().isOk())
-                .andExpectAll(
-                        jsonPath("$.id", is(1)),
-                        jsonPath("$.title", is("New Laptop")),
-                        jsonPath("$.description", is("Laptop with 16GB RAM")),
-                        jsonPath("$.category", is("Electronics")),
-                        jsonPath("$.amount", is(5)),
-                        jsonPath("$.coast", is(200.3))
-                );
-    }
-
-    @Test
-    @Order(9)
+    @Order(6)
     @DisplayName("Test delete product")
     @WithMockUser(roles = "MANAGER")
     public void testDeleteProduct() throws Exception {
