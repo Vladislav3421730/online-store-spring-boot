@@ -1,18 +1,18 @@
 ﻿# Online Market Rest api
 ## Используемые технологии в проекте 
 
-    * Spring Boot
-    * Spring Secutiry
-    * Spring Data Jpa
-    * JWT (access/refresh)
-    * Spring Actuator
-    * Swagger
-    * Redis
-    * Test Containers
-    * Docker 
-    * Flyway
-    * MapStruct
-    * Pagination (Page, PageRequest)
+* Spring Boot
+* Spring Secutiry
+* Spring Data Jpa
+* JWT (access/refresh)
+* Spring Actuator
+* Swagger
+* Redis
+* Test Containers
+* Docker 
+* Flyway
+* MapStruct
+* Pagination (Page, PageRequest)
     
 ## Инструкция по запуску 
 Для начало нужно скопировать проект себе локально на компьютер
