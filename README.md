@@ -10,12 +10,14 @@ MANAGER имеет доступ к добавлению, удалению, ре�
 * Spring Secutiry
 * Spring Data Jpa
 * Spring Data Validation
+* Spring Boot Tests
 * JWT (access/refresh)
 * Spring Actuator
 * Swagger
 * Redis
 * PostgreSQL
 * Test Containers
+* Mockito
 * Docker
 * Flyway
 * MapStruct
