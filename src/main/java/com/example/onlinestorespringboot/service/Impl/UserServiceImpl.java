@@ -2,6 +2,7 @@ package com.example.onlinestorespringboot.service.Impl;
 
 
 import com.example.onlinestorespringboot.dto.*;
+import com.example.onlinestorespringboot.exception.EmptyCartException;
 import com.example.onlinestorespringboot.exception.UserNotFoundException;
 import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.mapper.ProductMapper;
@@ -117,6 +118,9 @@ public class UserServiceImpl implements UserService {
         log.info("Making an order for user: {}", userDto.getEmail());
 
         User user = userMapper.toEntity(userDto);
+        if (user.getCarts().isEmpty()) {
+            throw new EmptyCartException(i18nUtil.getMessage(Messages.CART_ERROR_EMPTY_CART));
+        }
         Order order = makeOrderUtils.createOrder(orderRequestDto);
         makeOrderUtils.processAddress(user, order);
         makeOrderUtils.createOrderItems(user, order);

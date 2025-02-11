@@ -45,18 +45,12 @@ public class ProductControllerTest {
             .withReuse(false);
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static CreateProductDto createProductDto;
-    private static CreateProductDto createInvalidProductDto;
-    private static ProductDto updatedProductDto;
+
     private static ProductFilterDTO productFilterDTO;
 
 
     @BeforeAll
     static void setup() {
-        createProductDto = ProductFactory.createProductDto();
-        createInvalidProductDto = ProductFactory.createInvalidProductDto();
-        updatedProductDto = ProductFactory.createUpdatedProductDto();
-
         productFilterDTO = new ProductFilterDTO();
         productFilterDTO.setMinPrice(BigDecimal.valueOf(1000));
         productFilterDTO.setMinPrice(BigDecimal.valueOf(5000));

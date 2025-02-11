@@ -92,4 +92,10 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(EmptyCartException.class)
+    public ResponseEntity<AppErrorDto> handleEmptyCartException(EmptyCartException emptyCartException) {
+        return new ResponseEntity<>(new AppErrorDto(emptyCartException.getMessage(),400), HttpStatus.BAD_REQUEST);
+
+    }
+
 }
