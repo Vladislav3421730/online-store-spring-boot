@@ -29,3 +29,6 @@ jwt:
 application:
   name: Online store by spring boot
   version: 1.0.0
+
+file:
+  path: uploads

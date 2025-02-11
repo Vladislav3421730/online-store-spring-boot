@@ -2,7 +2,6 @@ package com.example.onlinestorespringboot.controller;
 
 
 import com.example.onlinestorespringboot.dto.AppErrorDto;
-import com.example.onlinestorespringboot.dto.JwtResponseDto;
 import com.example.onlinestorespringboot.exception.ImageNotFoundException;
 import com.example.onlinestorespringboot.i18n.I18nUtil;
 import com.example.onlinestorespringboot.util.Messages;
@@ -13,8 +12,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -30,8 +32,8 @@ import java.nio.file.Paths;
 @RestController
 @RequestMapping("/uploads")
 @RequiredArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@Tag(name = "file", description = "controller for displaying images from directory uploads")
+@Setter
+@Tag(name = "File", description = "controller for displaying images from directory uploads")
 @ApiResponses({
         @ApiResponse(
                 responseCode = "200",
@@ -46,18 +48,21 @@ import java.nio.file.Paths;
 })
 public class FileController {
 
-    I18nUtil i18nUtil;
+    private final I18nUtil i18nUtil;
+
+    @Value("${file.path}")
+    private String path;
 
     @GetMapping("/{fileName}")
     @Operation(summary = "display file by his name")
     public ResponseEntity<Resource> getFile(@PathVariable String fileName) {
-        Path filePath = Paths.get("uploads").resolve(fileName).normalize();
+        Path filePath = Paths.get(path).resolve(fileName).normalize();
         Resource resource = new FileSystemResource(filePath);
-        if (resource.exists()) {
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)
-                    .body(resource);
+        if (!resource.exists()) {
+            throw new ImageNotFoundException(i18nUtil.getMessage(Messages.IMAGE_ERROR_NOT_FOUND, fileName));
         }
-        throw new ImageNotFoundException(i18nUtil.getMessage(Messages.IMAGE_ERROR_NOT_FOUND,fileName));
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
     }
 }

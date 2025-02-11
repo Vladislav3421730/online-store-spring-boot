@@ -7,14 +7,18 @@ import com.example.onlinestorespringboot.dto.LoginUserDto;
 import com.example.onlinestorespringboot.dto.OrderRequestDto;
 import com.example.onlinestorespringboot.dto.ProductDto;
 import com.example.onlinestorespringboot.service.ProductService;
+import com.example.onlinestorespringboot.util.OrderPayingValidator;
 import com.example.utils.TokenUtils;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.*;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -31,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.Mockito.*;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.time.Duration;
 
 @Testcontainers
@@ -159,15 +164,39 @@ public class CartControllerTest {
     @Order(6)
     @DisplayName("Test make order")
     void testMakeOrder() throws Exception {
+        try (MockedStatic<OrderPayingValidator> mockedStatic = Mockito.mockStatic(OrderPayingValidator.class)) {
+            mockedStatic.when(() -> OrderPayingValidator.validateOrderCoast(
+                    BigDecimal.valueOf(orderRequestDto.getTotalCoast()))).thenReturn(Boolean.TRUE);
 
-        String accessToken = TokenUtils.getAccessTokenFromRequest(mockMvc, loginUserDto);
+            String accessToken = TokenUtils.getAccessTokenFromRequest(mockMvc, loginUserDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/cart")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(orderRequestDto))
-                        .header("Authorization", "Bearer " + accessToken))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message", notNullValue()));
+            mockMvc.perform(MockMvcRequestBuilders.post("/api/cart")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(orderRequestDto))
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.message", notNullValue()));
+        }
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Test make order when payment failed")
+    void testMakeOrderWithFailedPayment() throws Exception {
+        try (MockedStatic<OrderPayingValidator> mockedStatic = Mockito.mockStatic(OrderPayingValidator.class)) {
+            mockedStatic.when(() -> OrderPayingValidator.validateOrderCoast(
+                    BigDecimal.valueOf(orderRequestDto.getTotalCoast()))).thenReturn(Boolean.FALSE);
+
+            String accessToken = TokenUtils.getAccessTokenFromRequest(mockMvc, loginUserDto);
+
+            mockMvc.perform(MockMvcRequestBuilders.post("/api/cart")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(orderRequestDto))
+                            .header("Authorization", "Bearer " + accessToken))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message", notNullValue()))
+                    .andExpect(jsonPath("$.code", is(400)));
+        }
     }
 
 }

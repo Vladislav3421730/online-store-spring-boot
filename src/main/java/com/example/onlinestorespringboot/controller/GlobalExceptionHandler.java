@@ -86,4 +86,10 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler(PaymentFailedException.class)
+    public ResponseEntity<AppErrorDto> handlePaymentFailedException(PaymentFailedException paymentFailedException) {
+        return new ResponseEntity<>(new AppErrorDto(paymentFailedException.getMessage(),400), HttpStatus.BAD_REQUEST);
+
+    }
+
 }

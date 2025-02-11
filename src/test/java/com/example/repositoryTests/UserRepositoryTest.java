@@ -35,13 +35,11 @@ public class UserRepositoryTest {
 
     private static User user;
     private static User invalidUser;
-    private static User updatedUser;
 
     @BeforeAll
     static void setup() {
         user = UserFactory.createUser();
         invalidUser = UserFactory.createUserWithInvalidData();
-        updatedUser = UserFactory.createUpdatedUser();
     }
 
     @Test

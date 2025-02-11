@@ -50,6 +50,9 @@ management:
     process:
       enabled: true
 
+file:
+  path: uploads
+
 jwt:
   secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
   lifetime: 30m
@@ -59,6 +62,7 @@ jwt:
 application:
   name: Online store by spring boot
   version: 1.0.0
+
 
 
 
