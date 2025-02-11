@@ -1,4 +1,6 @@
 ﻿# Online Market Rest api
+## Описание функционала
+В данном Rest Api прдествлены эндпоинты для работы с товарами, их картинками, пользователями, заказами, корзиной пользователя.
 ## Используемые технологии в проекте 
 
 * Spring Boot
@@ -15,9 +17,14 @@
 * Flyway
 * MapStruct
 * Pagination (Page, PageRequest)
+* ResourceBundle
     
 ## Инструкция по запуску 
 Для начало нужно скопировать проект себе локально на компьютер
+```bash
+git clone https://github.com/Vladislav3421730/online-store-spring-boot
+```
+Затем перейти в папку скопированного проекта
 ```bash
 cd online-store-spring-boot
 ```
