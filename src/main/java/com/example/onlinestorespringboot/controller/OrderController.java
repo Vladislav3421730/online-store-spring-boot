@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -47,6 +48,7 @@ public class OrderController {
     I18nUtil i18nUtil;
 
     @GetMapping
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Find all orders", description = "Retrieves a paginated list of all orders.")
     @ApiResponse(
             responseCode = "200",
@@ -67,6 +69,7 @@ public class OrderController {
     }
 
     @PutMapping
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Update an order", description = "Updates an existing order based on the provided order details.")
     @ApiResponse(
             responseCode = "200",
@@ -79,6 +82,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Find order by ID", description = "Retrieves an order by its unique identifier.")
     @ApiResponses({
             @ApiResponse(
@@ -87,8 +91,8 @@ public class OrderController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid id",
+                    responseCode = "404",
+                    description = "Order not found",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             )
     })
@@ -98,6 +102,7 @@ public class OrderController {
     }
 
     @GetMapping("/user/email")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Find all orders by user email", description = "Retrieves a paginated list of all orders associated with a specific user email.")
     @ApiResponse(
             responseCode = "200",
@@ -119,6 +124,7 @@ public class OrderController {
     }
 
     @GetMapping("/user/id/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Find all orders by user ID", description = "Retrieves a paginated list of all orders associated with a specific user ID.")
     @ApiResponse(
             responseCode = "200",

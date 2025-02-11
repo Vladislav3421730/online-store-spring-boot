@@ -45,7 +45,7 @@ public class JwtAccessTokenUtils {
                 .setClaims(claims)
                 .setSubject(user.getEmail())
                 .setIssuedAt(issuedDate)
-                .setExpiration(new Date(issuedDate.getTime()+jwtLifetime.toMillis()))
+                .setExpiration(new Date(issuedDate.getTime() + jwtLifetime.toMillis()))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }

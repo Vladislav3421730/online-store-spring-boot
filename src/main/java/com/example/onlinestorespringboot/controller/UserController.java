@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -51,6 +52,7 @@ public class UserController {
     I18nUtil i18nUtil;
 
     @GetMapping
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Get current user", description = "Retrieves details of the currently authenticated user.")
     @ApiResponse(
             responseCode = "200",
@@ -63,6 +65,7 @@ public class UserController {
     }
 
     @GetMapping("/all")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Find all users", description = "Retrieves a paginated list of all users.")
     @ApiResponse(
             responseCode = "200",
@@ -83,6 +86,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Find user by ID", description = "Retrieves a user by their unique identifier.")
     @ApiResponses({
             @ApiResponse(
@@ -91,8 +95,8 @@ public class UserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid id",
+                    responseCode = "404",
+                    description = "User not found",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             )
     })
@@ -102,6 +106,7 @@ public class UserController {
     }
 
     @GetMapping("/email")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Find user by email", description = "Retrieves a user by their email address.")
     @ApiResponses({
             @ApiResponse(
@@ -110,8 +115,8 @@ public class UserController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
             ),
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid email",
+                    responseCode = "404",
+                    description = "User not found",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             )
     })
@@ -122,6 +127,7 @@ public class UserController {
     }
 
     @PutMapping("/bun")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Ban or unban user", description = "Bans or unbans a user based on the provided user details.")
     @ApiResponses({
             @ApiResponse(
@@ -141,6 +147,7 @@ public class UserController {
     }
 
     @PutMapping("/manager")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Assign or remove manager role", description = "Adds or removes the manager role from a user.")
     @ApiResponses({
             @ApiResponse(
@@ -160,6 +167,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Delete user by ID", description = "Deletes a user by their unique identifier.")
     @ApiResponses({
             @ApiResponse(
@@ -169,7 +177,12 @@ public class UserController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Invalid id",
+                    description = "Can't delete from yourself",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "User not found",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             )
     })

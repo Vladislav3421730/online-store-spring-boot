@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
@@ -45,6 +46,7 @@ public class ProductController {
 
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Save a new product with images", description = "Creates and saves a new product in the system")
     @ApiResponses({
             @ApiResponse(
@@ -60,6 +62,11 @@ public class ProductController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Product was saved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Error during saving product",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
             )
     })
@@ -102,6 +109,7 @@ public class ProductController {
     }
 
     @PutMapping
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Update a product", description = "Updates an existing product in the system")
     @ApiResponses({
             @ApiResponse(
@@ -112,6 +120,16 @@ public class ProductController {
             @ApiResponse(
                     responseCode = "403",
                     description = "Forbidden",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Error during updating product",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Product not found",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             ),
             @ApiResponse(
@@ -126,6 +144,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Delete a product", description = "Deletes a product by its ID")
     @ApiResponses({
             @ApiResponse(
@@ -142,6 +161,11 @@ public class ProductController {
                     responseCode = "200",
                     description = "Product was deleted successfully",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Product not found",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             )
     })
     public ResponseEntity<ResponseDto> deleteProduct(@PathVariable Long id) {
@@ -197,8 +221,8 @@ public class ProductController {
     @Operation(summary = "Find product by ID", description = "Retrieves a product by its unique ID")
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid id",
+                    responseCode = "404",
+                    description = "Product not found",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             ),
             @ApiResponse(

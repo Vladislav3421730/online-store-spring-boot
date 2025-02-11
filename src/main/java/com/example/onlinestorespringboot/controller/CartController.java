@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -52,6 +53,7 @@ public class CartController {
     I18nUtil i18nUtil;
 
     @PostMapping
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Create an order", description = "Processes the order request and creates an order for the user.")
     @ApiResponses({
             @ApiResponse(
@@ -77,6 +79,7 @@ public class CartController {
     }
 
     @PostMapping("/add/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Add product to cart", description = "Adds a product to the user's cart by product ID.")
     @ApiResponses({
             @ApiResponse(
@@ -87,6 +90,11 @@ public class CartController {
             @ApiResponse(
                     responseCode = "400",
                     description = "Error during adding product",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Product not found",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = AppErrorDto.class))
             )
     })
@@ -101,6 +109,7 @@ public class CartController {
     }
 
     @PutMapping("/increment/{index}")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Increment product quantity", description = "Increases the quantity of a product in the user's cart by index.")
     @ApiResponses({
             @ApiResponse(
@@ -123,6 +132,7 @@ public class CartController {
     }
 
     @PutMapping("/decrement/{index}")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Decrement product quantity", description = "Decreases the quantity of a product in the user's cart by index.")
     @ApiResponses({
             @ApiResponse(
@@ -144,6 +154,7 @@ public class CartController {
 
 
     @DeleteMapping("/delete/{index}")
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Delete product from cart", description = "Removes a product from the user's cart by index.")
     @ApiResponses({
             @ApiResponse(
