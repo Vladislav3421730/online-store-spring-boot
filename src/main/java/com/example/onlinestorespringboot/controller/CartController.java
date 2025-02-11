@@ -58,8 +58,7 @@ public class CartController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Order created successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+                    description = "Order created successfully"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -84,8 +83,7 @@ public class CartController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Product added successfully to cart",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+                    description = "Product added successfully to cart"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -114,8 +112,7 @@ public class CartController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Product in cart was incremented successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+                    description = "Product in cart was incremented successfully"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -137,8 +134,7 @@ public class CartController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Product in cart was decremented successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+                    description = "Product in cart was decremented successfully"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -159,8 +155,7 @@ public class CartController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Product in cart was deleted successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+                    description = "Product in cart was deleted successfully"
             ),
             @ApiResponse(
                     responseCode = "400",

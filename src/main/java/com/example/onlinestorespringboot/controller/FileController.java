@@ -37,8 +37,7 @@ import java.nio.file.Paths;
 @ApiResponses({
         @ApiResponse(
                 responseCode = "200",
-                description = "Image successfully founded",
-                content = @Content(mediaType = "application/json", schema = @Schema(implementation = Resource.class))
+                description = "Image successfully founded"
         ),
         @ApiResponse(
                 responseCode = "404",

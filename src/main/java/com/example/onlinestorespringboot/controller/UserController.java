@@ -69,10 +69,7 @@ public class UserController {
     @Operation(summary = "Find all users", description = "Retrieves a paginated list of all users.")
     @ApiResponse(
             responseCode = "200",
-            description = "Find all users (pagination included)",
-            content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = UserDto.class)))
+            description = "Find all users (pagination included)"
     )
     public ResponseEntity<Page<UserDto>> findAllUsers(
             @RequestParam(value = "offset", required = false) Integer offset,
@@ -91,8 +88,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "User was found successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+                    description = "User was found successfully"
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -111,8 +107,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "User was found successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+                    description = "User was found successfully"
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -132,8 +127,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "User was buned/unbaned successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+                    description = "User was buned/unbaned successfully"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -152,8 +146,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Role manager was added/removed successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+                    description = "Role manager was added/removed successfully"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -172,8 +165,7 @@ public class UserController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "User was deleted successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+                    description = "User was deleted successfully"
             ),
             @ApiResponse(
                     responseCode = "400",

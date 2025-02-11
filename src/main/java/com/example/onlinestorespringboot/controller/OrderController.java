@@ -52,10 +52,7 @@ public class OrderController {
     @Operation(summary = "Find all orders", description = "Retrieves a paginated list of all orders.")
     @ApiResponse(
             responseCode = "200",
-            description = "Find All Orders (pagination included)",
-            content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = OrderDto.class)))
+            description = "Find All Orders (pagination included)"
     )
     public ResponseEntity<Page<OrderDto>> findAllOrders(
             @RequestParam(value = "offset", required = false) Integer offset,
@@ -73,8 +70,7 @@ public class OrderController {
     @Operation(summary = "Update an order", description = "Updates an existing order based on the provided order details.")
     @ApiResponse(
             responseCode = "200",
-            description = "Order was updated successfully",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+            description = "Order was updated successfully"
     )
     public ResponseEntity<ResponseDto> updateOrder(@RequestBody @Valid OrderDto orderDto) {
         orderService.update(orderDto);
@@ -87,8 +83,7 @@ public class OrderController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Order was found successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))
+                    description = "Order was found successfully"
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -106,10 +101,7 @@ public class OrderController {
     @Operation(summary = "Find all orders by user email", description = "Retrieves a paginated list of all orders associated with a specific user email.")
     @ApiResponse(
             responseCode = "200",
-            description = "Find All Orders by user email (pagination included)",
-            content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = OrderDto.class)))
+            description = "Find All Orders by user email (pagination included)"
     )
     public ResponseEntity<Page<OrderDto>> findOrdersByUserEmail(
             @RequestParam(value = "offset", required = false) Integer offset,
@@ -128,10 +120,7 @@ public class OrderController {
     @Operation(summary = "Find all orders by user ID", description = "Retrieves a paginated list of all orders associated with a specific user ID.")
     @ApiResponse(
             responseCode = "200",
-            description = "Find All Orders by user id (pagination included)",
-            content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = OrderDto.class)))
+            description = "Find All Orders by user id (pagination included)"
     )
     public ResponseEntity<Page<OrderDto>> findOrdersByUserId(
             @RequestParam(value = "offset", required = false) Integer offset,

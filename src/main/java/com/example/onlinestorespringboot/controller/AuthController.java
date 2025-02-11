@@ -32,8 +32,7 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Successfully authenticated",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponseDto.class))
+                    description = "Successfully authenticated"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -51,8 +50,7 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Successfully registered user",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDto.class))
+                    description = "Successfully registered user"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -70,8 +68,7 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Successfully refreshed token",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponseDto.class))
+                    description = "Successfully refreshed token"
             ),
             @ApiResponse(
                     responseCode = "400",

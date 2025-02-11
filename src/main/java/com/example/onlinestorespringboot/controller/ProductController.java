@@ -61,8 +61,7 @@ public class ProductController {
             ),
             @ApiResponse(
                     responseCode = "200",
-                    description = "Product was saved successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+                    description = "Product was saved successfully"
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -92,10 +91,7 @@ public class ProductController {
     @Operation(summary = "Find all products", description = "Retrieves all products with pagination")
     @ApiResponse(
             responseCode = "200",
-            description = "Find all products (pagination included)",
-            content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = ProductDto.class)))
+            description = "Find all products (pagination included)"
     )
     public ResponseEntity<Page<ProductDto>> findAllProducts(
             @RequestParam(value = "offset", required = false) Integer offset,
@@ -134,8 +130,7 @@ public class ProductController {
             ),
             @ApiResponse(
                     responseCode = "200",
-                    description = "Product was updated successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+                    description = "Product was updated successfully"
             )
     })
     public ResponseEntity<ProductDto> updateProduct(@RequestBody @Valid ProductDto productDto) {
@@ -159,8 +154,7 @@ public class ProductController {
             ),
             @ApiResponse(
                     responseCode = "200",
-                    description = "Product was deleted successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))
+                    description = "Product was deleted successfully"
             ),
             @ApiResponse(
                     responseCode = "404",
@@ -177,10 +171,7 @@ public class ProductController {
     @Operation(summary = "Find products by filters", description = "Retrieves products based on filter criteria with pagination")
     @ApiResponse(
             responseCode = "200",
-            description = "Find all products by filters (pagination included)",
-            content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = ProductDto.class)))
+            description = "Find all products by filters (pagination included)"
     )
     public ResponseEntity<Page<ProductDto>> filterProducts(
             @RequestParam(value = "offset", required = false) Integer offset,
@@ -199,10 +190,7 @@ public class ProductController {
     @Operation(summary = "Search products by title", description = "Finds products by their title with pagination")
     @ApiResponse(
             responseCode = "200",
-            description = "Find all products by title (pagination included)",
-            content = @Content(
-                    mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = ProductDto.class)))
+            description = "Find all products by title (pagination included)"
     )
     public ResponseEntity<Page<ProductDto>> searchProducts(
             @RequestParam(value = "offset", required = false) Integer offset,
@@ -227,8 +215,7 @@ public class ProductController {
             ),
             @ApiResponse(
                     responseCode = "200",
-                    description = "Product was founded successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductDto.class))
+                    description = "Product was founded successfully"
             )
     })
     public ResponseEntity<ProductDto> findProductById(@PathVariable Long id) {
